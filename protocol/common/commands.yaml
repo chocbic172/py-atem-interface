@@ -1,0 +1,17 @@
+_atem_protocol_version: 11.0
+
+SetPGMVideoInput:
+  _role: host2device_command
+  _cmd: CPgI
+  _bits: 32
+  _doc: |
+    Switch video source on the program bus
+    
+    Args:
+      mix_effect: mix effect to be changed
+      video_source: video source to change to
+
+  packet:
+    - mix_effect: enum mixeffect.ATEMMixEffect
+    - video_source: enum common.ATEMVideoSource
+  

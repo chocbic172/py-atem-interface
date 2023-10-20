@@ -1,0 +1,67 @@
+_atem_protocol_version: 11.0
+
+ATEMFairlightMixerInputMixOptions:
+  _role: enum
+  _bits: 3
+
+  unmute: 1
+  mute: 2
+  afv: 4
+
+
+ATEMFairlightMixerInputTypes:
+  _role: enum
+  _bits: 2
+
+  external_video: 0
+  media_player: 1
+  external_audio: 2
+  madi: 3
+
+
+ATEMFairlightMixerSourceTypes:
+  _role: enum
+  _bits: 3
+  _doc:
+    Converted from signed to unsigned for easier parsing
+  
+  stereo: 18446744073709486336
+  mono1: 18446744073709486336
+  mono2: 18446744073709551361
+
+
+ATEMFairlightEQFilters:
+  _role: enum
+  _bits: 8
+  _doc: |
+    Fairlight EQ Filter Types
+    https://iconcollective.edu/types-of-eq/ has good
+    explainations of what the different filters do.
+
+  low_shelf: 1
+  high_cut: 2
+  bell_curve: 4
+  notch: 8
+  low_cut: 16
+  high_shelf: 32
+
+
+ATEMFairlightEQFrequencyRanges:
+  _role: enum
+  _bits: 4
+  _doc: |
+    Fairlight EQ Frequency Ranges
+    ----
+    | Frequency Range | Min Freq | Max Freq |
+    |-----------------|----------|----------|
+    | low             |       30 |      395 |
+    | midlow          |      100 |     1480 |
+    | midhigh         |      450 |     7910 |
+    | high            |     1400 |    21700 |
+    ----
+
+  low: 1
+  mid_low: 2
+  mid_high: 4
+  high: 8
+

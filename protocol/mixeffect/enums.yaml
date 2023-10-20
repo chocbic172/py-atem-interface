@@ -1,0 +1,12 @@
+_atem_protocol_version: 11.0
+
+ATEMMixEffect:
+  _role: enum
+  _bits: 8
+  _doc:
+    ATEM Mix Effects (sometimes called Mix Engines)
+
+  mix_effect1: 0
+  mix_effect2: 1
+  mix_effect3: 2
+  mix_effect4: 3

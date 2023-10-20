@@ -1,0 +1,10 @@
+ATEMKeyerTypes:
+  _role: enum
+  _bits: 8
+  _doc:
+    ATEM Keyer Types
+
+  luma: 0
+  chroma: 1
+  pattern: 2
+  dVE: 3
