@@ -1,6 +1,6 @@
 _atem_protocol_version: 11.0
 
-ATEMFairlightMixerInputMixOptions:
+ATEMFairlightMixerInputMixOption:
   _role: enum
   _bits: 3
 
@@ -9,7 +9,7 @@ ATEMFairlightMixerInputMixOptions:
   afv: 4
 
 
-ATEMFairlightMixerInputTypes:
+ATEMFairlightMixerInputType:
   _role: enum
   _bits: 2
 
@@ -19,7 +19,7 @@ ATEMFairlightMixerInputTypes:
   madi: 3
 
 
-ATEMFairlightMixerSourceTypes:
+ATEMFairlightMixerSourceType:
   _role: enum
   _bits: 3
   _doc:
@@ -30,7 +30,7 @@ ATEMFairlightMixerSourceTypes:
   mono2: 18446744073709551361
 
 
-ATEMFairlightEQFilters:
+ATEMFairlightEQFilter:
   _role: enum
   _bits: 8
   _doc: |
@@ -46,7 +46,7 @@ ATEMFairlightEQFilters:
   high_shelf: 32
 
 
-ATEMFairlightEQFrequencyRanges:
+ATEMFairlightEQFrequencyRange:
   _role: enum
   _bits: 4
   _doc: |

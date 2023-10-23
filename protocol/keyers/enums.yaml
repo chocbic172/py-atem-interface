@@ -1,4 +1,4 @@
-ATEMKeyerTypes:
+ATEMKeyerType:
   _role: enum
   _bits: 8
   _doc:
