@@ -1,0 +1,130 @@
+from __future__ import annotations
+from abc import ABC, abstractmethod
+import struct
+import math
+
+class BufferException(Exception):
+    """Base class for any atem buffer related errors"""
+    pass
+
+class PacketABC(ABC):
+    """Abstract class representing all ATEM command packets"""
+   
+    @classmethod
+    @abstractmethod
+    def from_bytes(cls, packet):
+        """Parse a set of bytes to form this class"""
+        pass
+
+    def to_bytes(self):
+        """Convert the information in the class into a set of bytes"""
+        pass
+
+class PacketBuffer(object):
+    """Provides helper functions for interfacing with binary
+    packet buffers
+    """
+    _BYTE_ORDER = '!' # Network byte order (big-endian)
+
+    def __init__(self, length_bytes: int) -> None:
+        """Create a buffer of length `length_bytes`
+        
+        Args:
+            length_bytes: length of buffer in bytes
+        """
+        self.size_bytes = length_bytes
+        self.buffer = bytearray(length_bytes)
+
+    @classmethod
+    def from_bytes(cls, packet: bytes) -> PacketBuffer:
+        """Create a buffer object from packet `packet`
+        
+        Args:
+            packet: bytes representing
+        """
+        cls.size_bytes = len(packet)
+        cls.buffer = packet
+        return cls
+
+    def _get_struct_format_char(self, bits: int, signed: bool) -> str:
+        """Get struct format character for struct.pack / struct.unpack
+
+        See: https://docs.python.org/3/library/struct.html#format-characters
+        Also: https://github.com/clvLabs/PyATEMMax for original implementation
+        """
+        format_char = ''
+
+        if bits == 8:
+            format_char = 'b'
+        elif bits == 16:
+            format_char = 'h'
+        elif bits == 32:
+            format_char = 'l'
+        elif bits == 64:
+            format_char = 'q'
+        else:
+            raise BufferException(f"_get_struct_format_char(): Invalid number of bits ({bits}) requested")
+
+        if not signed:
+            format_char = format_char.upper()
+
+        format_str = f"{self._BYTE_ORDER}{format_char}"
+
+        return format_str
+
+    def write_int(self, offset_bytes: int, value: int, bits: int, signed: bool=False) -> None:
+        """Write an integer
+        
+        Args:
+            offset_bytes: position in the buffer to write integer to
+            value: value of the integer to be written
+            bits: length of integer to be written in bits (must be a factor of 8)
+            signed: is the integer signed (i.e. can it be negative)
+        
+        Raises:
+            BufferException: Raised on input of invalid data
+        """
+        num_bytes = math.floor(bits / 8)
+        if (0 < offset_bytes) and (offset_bytes > (self.size_bytes - num_bytes)):
+            raise BufferException(f"Not enough room in buffer to write {bits}bit integer "
+                                  f"at offset {offset_bytes}.")
+
+        struct_format = self._get_struct_format_char(bits, signed)
+        struct.pack_into(struct_format, self.buffer, offset_bytes, value)
+
+    def read_int(self, offset_bytes: int, bits: int, signed: bool=False) -> int:
+        """Read an integer
+        
+        Args:
+            offset_bytes: position in the buffer to read the integer from
+            bits: length of integer to be read in bits (must be a factor of 8)
+            signed: is the integer signed (i.e. can it be negative)
+        
+        Raises:
+            BufferException: Raised on input of invalid data
+        
+        Returns:
+            int - requested integer from buffer
+        """
+        num_bytes = math.floor(bits / 8)
+        if (0 < offset_bytes) and (offset_bytes > (self.size_bytes - num_bytes)):
+            raise BufferException(f"Not enough room in buffer to read {bits}bit integer "
+                                  f"at offset {offset_bytes}.")
+
+        struct_format = self._get_struct_format_char(bits, signed)
+        return struct.unpack_from(struct_format, self.buffer, offset_bytes)[0]
+    
+    def read_flag(self, offset_bytes: int, bitfield_len_bits: int, bit_position: int) -> bool:
+        """Reads a flag from a bitfield
+        
+        Args:
+            offset_bytes: position of the bitfield in the buffer
+            bitfield_len_bits: length of bitfield containing flag
+            bit_position: location of flag bit within bitfield
+        
+        Returns:
+            bool - whether requested flag bit is high
+        """
+        bitfield = self.read_int(offset_bytes, bitfield_len_bits)
+        flag_bit = bitfield & (1<<bit_position)
+        return True if flag_bit else False
