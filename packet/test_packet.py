@@ -63,3 +63,73 @@ class TestPacketBuffer:
 
         with pytest.raises(BufferException):
             buf._get_struct_format_char(23, False)
+
+    def test_write_flag(self):
+        buf = PacketBuffer(8)
+
+        buf.write_flag(offset_bytes=0, bitfield_len_bits=8,
+                       bit_position=4, value=True)
+        assert buf.read_int(offset_bytes=0, bits=8) == 0b00010000
+
+        buf.write_flag(offset_bytes=0, bitfield_len_bits=8,
+                       bit_position=4, value=False)
+        assert buf.read_int(offset_bytes=0, bits=8) == 0b000000000
+
+        buf.write_flag(offset_bytes=1, bitfield_len_bits=8,
+                       bit_position=7, value=True)
+        assert buf.read_int(offset_bytes=1, bits=8) == 0b10000000
+
+    def test_read_flag(self):
+        buf = PacketBuffer(8)
+
+        buf.buffer[0:1] = (0b10000001).to_bytes(1)
+        assert buf.read_flag(offset_bytes=0, bitfield_len_bits=8,
+                             bit_position=7)
+        assert buf.read_flag(offset_bytes=0, bitfield_len_bits=8,
+                             bit_position=0)
+        assert not buf.read_flag(offset_bytes=0, bitfield_len_bits=8,
+                                 bit_position=2)
+    
+    def test_write_float(self):
+        buf = PacketBuffer(8)
+
+        buf.write_float(offset_bytes=0, bits=8, factor=2, value=1.21)
+        assert int.from_bytes(buf.buffer[0:1]) == 121
+
+        buf.write_float(offset_bytes=1, bits=8, factor=2, value=-1.21,
+                        signed=True)
+        assert int.from_bytes(buf.buffer[1:2], signed=True) == -121
+
+    def test_read_float(self):
+        buf = PacketBuffer(8)
+
+        buf.buffer[0:1] = (121).to_bytes(1)
+        assert buf.read_float(offset_bytes=0, bits=8, factor=2) == 1.21
+
+        buf.buffer[1:2] = (-121).to_bytes(1, signed=True)
+        assert buf.read_float(offset_bytes=1, bits=8, factor=2, signed=True)\
+            == -1.21
+    
+    def test_write_string(self):
+        buf = PacketBuffer(32)
+
+        buf.write_string(offset_bytes=0, len_bytes=8, string="abcdefgh")
+        assert buf.buffer[0:8].decode("utf8").rstrip('\x00') == "abcdefgh"
+
+        buf.write_string(offset_bytes=8, len_bytes=8, string="abc")
+        assert buf.buffer[8:16].decode("utf8").rstrip('\x00') == "abc"
+
+        buf.write_string(offset_bytes=16, len_bytes=8, string="abcdefghij")
+        assert buf.buffer[16:32].decode("utf8").rstrip('\x00') == "abcdefgh"
+    
+    def test_read_string(self):
+        buf = PacketBuffer(32)
+
+        buf.buffer[0:8] = "abcdefgh".encode('utf8')
+        assert buf.read_string(offset_bytes=0, len_bytes=8) == "abcdefgh"
+
+        buf.buffer[8:16] = "abc".encode('utf8')
+        assert buf.read_string(offset_bytes=8, len_bytes=8) == "abc"
+
+        buf.buffer[16:32] = "abcdefghijk".encode('utf8')
+        assert buf.read_string(offset_bytes=16, len_bytes=8) == "abcdefgh"
