@@ -80,7 +80,7 @@ packet:
 |`sfloat8_X`|sfloat32|Signed 8-bit Integer, converted to float by dividing by 10^X|
 |`sfloat16_X`|sint16|Signed 16-bit Integer, converted to float by dividing by 10^X|
 |`sfloat32_X`|sint32|Signed 32-bit Integer, converted to float by dividing by 10^X|
-|`string_X`|array|String (null terminated?) of max length X|
+|`stringX`|array|String (null terminated?) of max length X|
 |`ufloat8_X`|sfloat32|Unsigned 8-bit Integer, converted to float by dividing by 10^X|
 |`ufloat16_X`|sint16|Unsigned 16-bit Integer, converted to float by dividing by 10^X|
 |`ufloat32_X`|sint32|Unsigned 32-bit Integer, converted to float by dividing by 10^X|

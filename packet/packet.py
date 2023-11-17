@@ -39,7 +39,7 @@ class PacketBuffer(object):
         """Create a buffer object from packet `packet`
 
         Args:
-            packet: bytes representing
+            packet: packet as bytes
         """
         cls.size_bytes = len(packet)
         cls.buffer = packet

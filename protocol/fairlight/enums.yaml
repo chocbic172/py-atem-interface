@@ -2,7 +2,7 @@ _atem_protocol_version: 11.0
 
 ATEMFairlightMixerInputMixOption:
   _role: enum
-  _bits: 3
+  _bits: 8
 
   unmute: 1
   mute: 2
@@ -21,7 +21,7 @@ ATEMFairlightMixerInputType:
 
 ATEMFairlightMixerSourceType:
   _role: enum
-  _bits: 3
+  _bits: 64
   _doc:
     Converted from signed to unsigned for easier parsing
   

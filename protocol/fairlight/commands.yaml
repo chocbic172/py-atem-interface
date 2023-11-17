@@ -1,0 +1,39 @@
+_atem_protocol_version: 11.0
+
+FairlightMixerState:
+  _role: host2device_command
+  _cmd: FASP
+  _bits: 392
+  _doc: |
+    Fairlight audio mixer state
+
+    Args:
+      input_index: Audio source state pertains to
+      audio_source: Type of audio source
+      source_type: Usage unclear
+      max_frames_delay: Max number of frames audio signal can be delayed (0-8)
+      frames_delay: Actual number of frames the audio signal is delayed by (0-8)
+      gain: Audio source pre-fader gain (-100.0 to 6.0)
+      eq_enabled: Whether EQ is applied to this channel
+      eq_gain: Gain added the EQ processing step (-20.0 to 20.0)
+      dynamics_gain: Gain added in the dynamics processing step (0.0 to 20.0)
+      balance: Relative level of left vs right channel (-1.0 to 1.0)
+      volume: Fader gain (-100.0 to 10.0)
+      valid_mix_options: bitfield
+      mix_option: Whether input is muted, unmuted or following video
+
+  packet:
+    - input_index: uint64
+    - audio_source: uint64
+    - source_type: uint8
+    - max_frames_delay: uint8
+    - frames_delay: uint8
+    - gain: sfloat32_2
+    - eq_enabled: bool16
+    - eq_gain: sfloat32_2
+    - dynamics_gain: sfloat32_2
+    - balanace: sfloat16_3
+    - volume: sfloat32_2
+    - valid_mix_options: uint8
+    - mix_option: enum fairlight.ATEMFairlightMixerInputMixOption
+  
